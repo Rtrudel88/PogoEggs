@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(to bottom right, #3498db, #e74c3c);
+      color: #fff;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    .pokemon-info {
+      margin-bottom: 15px;
+      padding: 15px;
+      border-radius: 10px;
+      background: linear-gradient(to bottom right, #2c3e50, #34495e);
+      border: 2px solid transparent;
+      transition: border-color 0.3s ease-in-out;
+    }
+
+    .pokemon-info:hover {
+      border-color: #3498db;
+    }
+
+    .pokemon-name {
+      color: #3498db;
+      font-weight: bold;
+    }
+
+    .egg-type {
+      color: #888;
+      font-size: 12px;
+    }
+  </style>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pokémon Information</title>
+</head>
+<body>
+  <!-- Pokémon information container -->
+  <div id="pokemon-container"></div>
+
+  <script>
+    // Fetch JSON data
+    const apiUrl = "https://raw.githubusercontent.com/bigfoott/ScrapedDuck/data/eggs.json";
+
+    fetch(apiUrl)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then(data => {
+        // Process Pokémon information
+        if (Array.isArray(data)) {
+          // Create HTML content
+          let htmlContent = '';
+
+          data.forEach(pokemon => {
+            const name = pokemon.name || "Pokemon Name Not Found";
+            const eggType = pokemon.eggType || "Egg Type Not Found";
+            const combatPowerMin = pokemon.combatPower?.min || "Combat Power Min Not Found";
+            const combatPowerMax = pokemon.combatPower?.max || "Combat Power Max Not Found";
+            const imageUrl = pokemon.image || "Image URL Not Found";
+
+            // Append Pokémon information to HTML content
+            htmlContent += `
+              <div class="pokemon-info">
+                <div class="pokemon-name">${name}</div>
+                <div class="egg-type">Egg Type: ${eggType}</div>
+                <div>Combat Power: ${combatPowerMin} - ${combatPowerMax}</div>
+                <img src="${imageUrl}" width="100" height="100" /><br/><br/>
+              </div>`;
+          });
+
+          // Display HTML content in the container
+          document.getElementById('pokemon-container').innerHTML = htmlContent;
+        } else {
+          console.log("Invalid or unexpected response format.");
+        }
+      })
+      .catch(error => console.error("Error fetching data:", error));
+  </script>
+</body>
+</html>
